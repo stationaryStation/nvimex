@@ -1,7 +1,18 @@
+"  _   _       _                     
+" | \ | |_   _(_)_ __ ___   _____  __
+" |  \| \ \ / / | '_ ` _ \ / _ \ \/ /
+" | |\  |\ V /| | | | | | |  __/>  < 
+" |_| \_| \_/ |_|_| |_| |_|\___/_/\_\ 
+" -----------------------------------------
+"  A neovim configuration file for Neovim.
+"
+"  Author: StationaryStation 
+"  Version: 1.0.0
+"
 call plug#begin()
 
 " StatusLine
-Plug 'beauwilliams/statusline.lua'
+Plug 'tamton-aquib/staline.nvim'
 " Signify 
 Plug 'mhinz/vim-signify'
 " Colorscheme 
@@ -22,15 +33,17 @@ Plug 'hrsh7th/vim-vsnip'
 Plug 'onsails/lspkind-nvim'
 " Tabnine
 Plug 'tzachar/cmp-tabnine', { 'do': './install.sh' }
-" Tabline
+" Tabline (not to be confused with tabline)
 Plug 'noib3/cokeline.nvim'
+" Minimap
+Plug 'wfxr/minimap.vim'
 " Nvim-web-devicons
 Plug 'kyazdani42/nvim-web-devicons'
 " Notification service
 Plug 'rcarriga/nvim-notify'
 " Dashboard and fuzzy finder
 Plug 'nvim-lua/plenary.nvim'
-Plug 'nvim-telescope/telescope.nvim'
+Plug 'liuchengxu/vim-clap'
 Plug 'glepnir/dashboard-nvim'
 " Better Escape (less lag when escaping insert mode)
 Plug 'max397574/better-escape.nvim'
@@ -46,6 +59,8 @@ Plug 'karb94/neoscroll.nvim'
 Plug 'Pocco81/AutoSave.nvim'
 " OrgMode (this isn't emacs so why did I include this :thinking:)
 Plug 'kristijanhusak/orgmode.nvim'
+" ScrollBar (Because why not)
+Plug 'Xuyuanp/scrollbar.nvim'
 call plug#end()
 
 " Set Icons for nvim-tree
@@ -72,24 +87,38 @@ let g:nvim_tree_icons = {
     \   'symlink_open': "",
     \   }
     \ }
-
+" Set vim-clap as the default for dashboard 
+let g:dashboard_default_executive ='clap'
 " Required for cokeline.nvim and nvim-tree
 set termguicolors
+" Show line numbers 
+set number
 " Set leader key from / to ;
 let mapleader = ";"
 " Change colorscheme to tokyonight
 colorscheme tokyonight
-
+" Configure scrollbar.nvim 
+augroup ScrollbarInit
+  autocmd!
+  autocmd CursorMoved,VimResized,QuitPre * silent! lua require('scrollbar').show()
+  autocmd WinEnter,FocusGained           * silent! lua require('scrollbar').show()
+  autocmd WinLeave,BufLeave,BufWinLeave,FocusLost            * silent! lua require('scrollbar').clear()
+augroup end
+" Configure minimap.vim 
+let g:minimap_width = 10
+let g:minimap_auto_start = 1
+let g:minimap_auto_start_win_enter = 1
+let g:minimap_close_filetypes = ['dashboard']
+let g:minimap_block_filetypes = ['fugitive', 'nerdtree', 'tagbar']
 " nvim-cmp stuff (i have no idea what this does)
 set completeopt=menu,menuone,noselect
-
-" Set telescope to default fuzzy finder
-let g:dashboard_default_executive = 'telescope'
-
-" Keybind
+" Add mouse support : 
+set mouse=a
+" Keybindings
 nnoremap <C-n> :NvimTreeToggle<CR>
 nnoremap <leader>r :NvimTreeRefresh<CR>
 nnoremap <leader>n :NvimTreeFindFile<CR>
+nnoremap <leader>mt :MinimapToggle<CR>
 nmap <Leader>ss :<C-u>SessionSave<CR>
 nmap <Leader>sl :<C-u>SessionLoad<CR>
 nnoremap <silent> <Leader>fh :DashboardFindHistory<CR>
@@ -296,6 +325,8 @@ lua <<EOF
 			on_off_commands = true,
 			write_all_buffers = false,
 		}
+	-- Config Staline 
+	require('staline').setup{}
 	-- Config Notification service
 	require("notify").setup({
   		-- Animation style (see below for details)
