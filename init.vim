@@ -7,7 +7,7 @@
 "  A neovim configuration file for Neovim.
 "
 "  Author: StationaryStation 
-"  Version: 1.0.0
+"  Version: 1.0.1
 "
 call plug#begin()
 
@@ -36,14 +36,14 @@ Plug 'tzachar/cmp-tabnine', { 'do': './install.sh' }
 " Tabline (not to be confused with tabline)
 Plug 'noib3/cokeline.nvim'
 " Minimap
-Plug 'wfxr/minimap.vim'
+" Plug 'wfxr/minimap.vim'
 " Nvim-web-devicons
 Plug 'kyazdani42/nvim-web-devicons'
 " Notification service
 Plug 'rcarriga/nvim-notify'
 " Dashboard and fuzzy finder
 Plug 'nvim-lua/plenary.nvim'
-Plug 'liuchengxu/vim-clap'
+Plug 'nvim-telescope/telescope.nvim'
 Plug 'glepnir/dashboard-nvim'
 " Better Escape (less lag when escaping insert mode)
 Plug 'max397574/better-escape.nvim'
@@ -61,6 +61,11 @@ Plug 'Pocco81/AutoSave.nvim'
 Plug 'kristijanhusak/orgmode.nvim'
 " ScrollBar (Because why not)
 Plug 'Xuyuanp/scrollbar.nvim'
+" CheatSheet (for n00bs)
+Plug 'sudormrfbin/cheatsheet.nvim'
+Plug 'nvim-lua/popup.nvim'
+" vscode-rename like interface for neovim
+Plug 'filipdutescu/renamer.nvim'
 call plug#end()
 
 " Set Icons for nvim-tree
@@ -88,7 +93,7 @@ let g:nvim_tree_icons = {
     \   }
     \ }
 " Set vim-clap as the default for dashboard 
-let g:dashboard_default_executive ='clap'
+let g:dashboard_default_executive ='telescope'
 " Required for cokeline.nvim and nvim-tree
 set termguicolors
 " Show line numbers 
@@ -104,21 +109,23 @@ augroup ScrollbarInit
   autocmd WinEnter,FocusGained           * silent! lua require('scrollbar').show()
   autocmd WinLeave,BufLeave,BufWinLeave,FocusLost            * silent! lua require('scrollbar').clear()
 augroup end
-" Configure minimap.vim 
-let g:minimap_width = 10
-let g:minimap_auto_start = 1
-let g:minimap_auto_start_win_enter = 1
-let g:minimap_close_filetypes = ['dashboard']
-let g:minimap_block_filetypes = ['fugitive', 'nerdtree', 'tagbar', 'NvimTree']
+" Configure minimap.vim (no longer needed)
+"let g:minimap_width = 10
+"let g:minimap_auto_start = 1
+"let g:minimap_auto_start_win_enter = 1
+"let g:minimap_close_filetypes = ['dashboard']
+"let g:minimap_block_filetypes = ['fugitive', 'nerdtree', 'tagbar', 'NvimTree']
 " nvim-cmp stuff (i have no idea what this does)
 set completeopt=menu,menuone,noselect
-" Add mouse support : 
+" Add mouse support 
 set mouse=a
+" Disable word wrapping
+set nowrap
 " Keybindings
 nnoremap <C-n> :NvimTreeToggle<CR>
 nnoremap <leader>r :NvimTreeRefresh<CR>
 nnoremap <leader>n :NvimTreeFindFile<CR>
-nnoremap <leader>mt :MinimapToggle<CR>
+" nnoremap <leader>mt :MinimapToggle<CR>
 nmap <Leader>ss :<C-u>SessionSave<CR>
 nmap <Leader>sl :<C-u>SessionLoad<CR>
 nnoremap <silent> <Leader>fh :DashboardFindHistory<CR>
@@ -127,31 +134,27 @@ nnoremap <silent> <Leader>tc :DashboardChangeColorscheme<CR>
 nnoremap <silent> <Leader>fa :DashboardFindWord<CR>
 nnoremap <silent> <Leader>fb :DashboardJumpMark<CR>
 nnoremap <silent> <Leader>cn :DashboardNewFile<CR>
-
+nnoremap <Leader>pp lua require'telescope.builtin.lsp_definitions'.planets{}<CR>
+inoremap <silent> <F2> <cmd>lua require('renamer').rename()<cr>
+nnoremap <silent> <leader>rn <cmd>lua require('renamer').rename()<cr>
+vnoremap <silent> <leader>rn <cmd>lua require('renamer').rename()<cr>
+nnoremap <Leader>nt :tabedit ./<CR>
 " cool Dashboard-nvim logo B)
 let g:dashboard_custom_header =<< trim END
-=================     ===============     ===============   ========  ========
-\\ . . . . . . .\\   //. . . . . . .\\   //. . . . . . .\\  \\. . .\\// . . //
-||. . ._____. . .|| ||. . ._____. . .|| ||. . ._____. . .|| || . . .\/ . . .||
-|| . .||   ||. . || || . .||   ||. . || || . .||   ||. . || ||. . . . . . . ||
-||. . ||   || . .|| ||. . ||   || . .|| ||. . ||   || . .|| || . | . . . . .||
-|| . .||   ||. _-|| ||-_ .||   ||. . || || . .||   ||. _-|| ||-_.|\ . . . . ||
-||. . ||   ||-'  || ||  `-||   || . .|| ||. . ||   ||-'  || ||  `|\_ . .|. .||
-|| . _||   ||    || ||    ||   ||_ . || || . _||   ||    || ||   |\ `-_/| . ||
-||_-' ||  .|/    || ||    \|.  || `-_|| ||_-' ||  .|/    || ||   | \  / |-_.||
-||    ||_-'      || ||      `-_||    || ||    ||_-'      || ||   | \  / |  `||
-||    `'         || ||         `'    || ||    `'         || ||   | \  / |   ||
-||            .===' `===.         .==='.`===.         .===' /==. |  \/  |   ||
-||         .=='   \_|-_ `===. .==='   _|_   `===. .===' _-|/   `==  \/  |   ||
-||      .=='    _-'    `-_  `='    _-'   `-_    `='  _-'   `-_  /|  \/  |   ||
-||   .=='    _-'          '-__\._-'         '-_./__-'         `' |. /|  |   ||
-||.=='    _-'                                                     `' |  /==.||
-=='    _-'                        Station's                           \/   `==
-\   _-'                          N E O V I M                           `-_   /
- `''                                                                      ``'
+   ▐ ▄  ▌ ▐·▪  • ▌ ▄ ·. ▄▄▄ .▐▄• ▄ 
+  •█▌▐█▪█·█▌██ ·██ ▐███▪▀▄.▀· █▌█▌▪
+  ▐█▐▐▌▐█▐█•▐█·▐█ ▌▐▌▐█·▐▀▀▪▄ ·██· 
+  ██▐█▌ ███ ▐█▌██ ██▌▐█▌▐█▄▄▌▪▐█·█▌
+  ▀▀ █▪. ▀  ▀▀▀▀▀  █▪▀▀▀ ▀▀▀ •▀▀ ▀▀
+        By: StationaryStation
 END
 " Disable tabline in the dashboard buffer
 autocmd FileType dashboard set showtabline=0 | autocmd WinLeave <buffer> set showtabline=2
+
+" Setup highlights for rename.nvim 
+hi default link RenamerNormal Normal
+hi default link RenamerBorder RenamerNormal
+hi default link RenamerTitle Identifier
 
 lua <<EOF
 
@@ -168,6 +171,7 @@ lua <<EOF
 		fg              = "#1a1b26",  -- Foreground text color.
 		bg              = "none",     -- Default background is transparent.
 		cool_symbol     = " ",
+		branch_symbol = " ", 
 	},
 	mode_colors = {
 		n = "#2ac3de",
@@ -183,7 +187,7 @@ lua <<EOF
 	},
 	sections = {
 		left = { '- ', '-mode', '-file_name', 'left_sep_double', 'branch' },
-		mid = { 'lsp' },
+		mid = { '  ', 'lsp_name' },
 		right = { 'cool_symbol','right_sep_double', '-line_column' }
 	}
 }
@@ -269,12 +273,18 @@ lua <<EOF
  		 org_default_notes_file = '~/org/refile.org',
 	})
 
-	-- Setup lspconfig.
+	-- Setup linters for typescript, svelte, javascript and css files
   	local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
-  	-- Replace <YOUR_LSP_SERVER> with each lsp server you've enabled.
+  	capabilities.textDocument.completion.completionItem.snippetSupport = true
   	require'lspconfig'.eslint.setup {}
 	require'lspconfig'.svelte.setup{}
 	require'lspconfig'.cmake.setup{}
+	require'lspconfig'.cssls.setup{
+		capabilities = capabilities,
+	}
+	require'lspconfig'.emmet_ls.setup{}
+	-- for tsserver to work you need the npm package for typescript and typescript-language-server to be installed plus a optional tsconfig.json
+	require'lspconfig'.tsserver.setup{}
 
 	-- Setup cmp_tabnine
 	local tabnine = require('cmp_tabnine.config')
@@ -382,6 +392,78 @@ lua <<EOF
 
 	-- Start neoscroll
 	require'neoscroll'.setup()
+	-- Setup CheatSheet
+	require"cheatsheet".setup({
+    
+		-- For generic cheatsheets like default, unicode, nerd-fonts, etc
+    		bundled_cheatsheets = true,
+    		-- bundled_cheatsheets = {
+    		--     enabled = {},
+    		--     disabled = {},
+    		-- },
+
+    		-- For plugin specific cheatsheets
+    		bundled_plugin_cheatsheets = true,
+    		-- bundled_plugin_cheatsheets = {
+    		--     enabled = {},
+    		--     disabled = {},
+    		-- }
+
+    		include_only_installed_plugins = true,
+	})
+	
+	-- Config Telescope.nvim
+	require('telescope').setup({
+  		defaults = {
+			previewer = true,
+			file_previewer = require'telescope.previewers'.vim_buffer_cat.new, 
+			grep_previewer = require'telescope.previewers'.vim_buffer_vimgrep.new,
+			qflist_previewer = require'telescope.previewers'.vim_buffer_qflist.new,
+    			layout_config = {
+				vertical = { width = 0.5 }
+   				 },
+  			},
+		pickers = {
+    			find_files = {
+      				theme = "dropdown",
+    			}
+  		},
+	})
+	-- Config Rename.nvim	
+	local mappings_utils = require('renamer.mappings.utils')
+	require('renamer').setup {
+    		-- The popup title, shown if `border` is true
+    		title = 'Rename',
+   		 -- The padding around the popup content
+    		padding = {
+        		top = 0,
+        		left = 0,
+        		bottom = 0,
+        		right = 0,
+    		},
+    		-- Whether or not to shown a border around the popup
+    		border = true,
+    		-- The characters which make up the border
+    		border_chars = { '─', '│', '─', '│', '╭', '╮', '╯', '╰' },
+    		-- Whether or not to highlight the current word references through LSP
+    		show_refs = true,
+    		-- Whether or not to add resulting changes to the quickfix list
+    		with_qf_list = true,
+    		-- Whether or not to enter the new name through the UI or Neovim's `input`
+    		-- prompt
+   	 	with_popup = true,
+    		-- The keymaps available while in the `renamer` buffer. The example below
+    		-- overrides the default values, but you can add others as well.
+    		mappings = {
+        		['<c-i>'] = mappings_utils.set_cursor_to_start,
+        		['<c-a>'] = mappings_utils.set_cursor_to_end,
+        		['<c-e>'] = mappings_utils.set_cursor_to_word_end,
+        		['<c-b>'] = mappings_utils.set_cursor_to_word_start,
+        		['<c-c>'] = mappings_utils.clear_line,
+        		['<c-u>'] = mappings_utils.undo,
+        		['<c-r>'] = mappings_utils.redo,
+    		},
+	}
 	
 	-- Display Notification
 	vim.notify("Welcome back, StationaryStation!")
