@@ -109,7 +109,7 @@ let g:minimap_width = 10
 let g:minimap_auto_start = 1
 let g:minimap_auto_start_win_enter = 1
 let g:minimap_close_filetypes = ['dashboard']
-let g:minimap_block_filetypes = ['fugitive', 'nerdtree', 'tagbar']
+let g:minimap_block_filetypes = ['fugitive', 'nerdtree', 'tagbar', 'NvimTree']
 " nvim-cmp stuff (i have no idea what this does)
 set completeopt=menu,menuone,noselect
 " Add mouse support : 
@@ -159,6 +159,34 @@ lua <<EOF
 	vim.notify = require 'notify'
 	-- Cokeline.nvim stuff
 	require('cokeline').setup({})
+	-- Configure Staline 
+	require('staline').setup {
+	defaults = {
+		left_separator  = "",
+		right_separator = "",
+		line_column     = "[%l/%L] :%c 並%p%% ", -- `:h stl` to see all flags.
+		fg              = "#1a1b26",  -- Foreground text color.
+		bg              = "none",     -- Default background is transparent.
+		cool_symbol     = " ",
+	},
+	mode_colors = {
+		n = "#2ac3de",
+		i = "#9ece6a",
+		c = "#f7768e",
+		v = "#bb9af7",   -- etc..
+	},
+	mode_icons = {
+		n = " ",
+		i = " ",
+		c = " ",
+		v = " ",   -- etc..
+	},
+	sections = {
+		left = { '- ', '-mode', '-file_name', 'left_sep_double', 'branch' },
+		mid = { 'lsp' },
+		right = { 'cool_symbol','right_sep_double', '-line_column' }
+	}
+}
 	-- Setup LspKind
 	local lspkind = require('lspkind')
 
@@ -324,9 +352,7 @@ lua <<EOF
 			clean_command_line_interval = 2500,
 			on_off_commands = true,
 			write_all_buffers = false,
-		}
-	-- Config Staline 
-	require('staline').setup{}
+			}
 	-- Config Notification service
 	require("notify").setup({
   		-- Animation style (see below for details)
