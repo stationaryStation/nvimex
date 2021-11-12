@@ -42,6 +42,6 @@ better-escape
 
 grep
 cat
-A terminal (I recomend (kitty)[https://github.com/kovidgoyal/kitty] and (Alacritty)[https://github.com/alacritty/alacritty]
+A terminal (I recomend [Kitty](https://github.com/kovidgoyal/kitty) and [Alacritty](https://github.com/alacritty/alacritty))
 
 ## Showcase (not ready **yet**)
