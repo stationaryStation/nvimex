@@ -1,5 +1,5 @@
-# NvimEX
-Another neovim config.
+<h1 align="center">NvimEX</h1>
+<p align="center">Another neovim config.</p>
 
 ## What is the purpose of this?
 
@@ -45,3 +45,10 @@ cat
 A terminal (I recomend [Kitty](https://github.com/kovidgoyal/kitty) and [Alacritty](https://github.com/alacritty/alacritty))
 
 ## Showcase (not ready **yet**)
+![Dashboard](https://github.com/stationaryStation/nvimex/blob/nvimex-screenshots/Screenshot_2021-11-12-07-41-26_1920x1080.png?raw=true)
+
+![Inside the editor](https://github.com/stationaryStation/nvimex/blob/nvimex-screenshots/Screenshot_2021-11-12-07-41-54_1920x1080.png?raw=true)
+
+![NvimTree in action](https://github.com/stationaryStation/nvimex/blob/nvimex-screenshots/Screenshot_2021-11-12-07-42-54_1920x1080.png?raw=true)
+
+![Which-key with leader key](https://github.com/stationaryStation/nvimex/blob/nvimex-screenshots/Screenshot_2021-11-12-07-43-13_1920x1080.png?raw=true)
