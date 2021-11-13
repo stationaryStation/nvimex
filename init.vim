@@ -7,8 +7,17 @@
 "  A neovim configuration file for Neovim.
 "
 "  Author: StationaryStation 
-"  Version: 1.0.2
+"  Version: 1.0.3
 "
+
+" Install vim-plug automatically for managing and updating plugins 
+if empty(glob('~/.vim/autoload/plug.vim'))
+  silent execute "!curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim"
+  autocmd VimEnter * PlugInstall | source $MYVIMRC
+endif 
+
+
+"Install plugins
 call plug#begin()
 
 " StatusLine
@@ -66,6 +75,14 @@ Plug 'sudormrfbin/cheatsheet.nvim'
 Plug 'nvim-lua/popup.nvim'
 " vscode-rename like interface for neovim
 Plug 'filipdutescu/renamer.nvim'
+" Discord Rich Precence :flushed:
+Plug 'andweeb/presence.nvim'
+" Clipboard Plugin 
+Plug 'AckslD/nvim-neoclip.lua'
+Plug 'tami5/sqlite.lua'
+" Session autosave plugin 
+Plug 'thaerkh/vim-workspace'
+
 call plug#end()
 
 " Set Icons for nvim-tree
@@ -92,16 +109,21 @@ let g:nvim_tree_icons = {
     \   'symlink_open': "",
     \   }
     \ }
-" Set vim-clap as the default for dashboard 
+
+" Set nvim-telescope as the default for dashboard 
 let g:dashboard_default_executive ='telescope'
+
 " Required for cokeline.nvim and nvim-tree
 set termguicolors
+
 " Show line numbers 
 set number
+
 " Set leader key from / to ;
 let mapleader = ";"
 " Change colorscheme to tokyonight
 colorscheme tokyonight
+
 " Configure scrollbar.nvim 
 augroup ScrollbarInit
   autocmd!
@@ -109,52 +131,62 @@ augroup ScrollbarInit
   autocmd WinEnter,FocusGained           * silent! lua require('scrollbar').show()
   autocmd WinLeave,BufLeave,BufWinLeave,FocusLost            * silent! lua require('scrollbar').clear()
 augroup end
-" Configure minimap.vim (no longer needed)
-"let g:minimap_width = 10
-"let g:minimap_auto_start = 1
-"let g:minimap_auto_start_win_enter = 1
-"let g:minimap_close_filetypes = ['dashboard']
-"let g:minimap_block_filetypes = ['fugitive', 'nerdtree', 'tagbar', 'NvimTree']
+
 " nvim-cmp stuff (i have no idea what this does)
 set completeopt=menu,menuone,noselect
+
 " Add mouse support 
 set mouse=a
+
 " Disable word wrapping
 set nowrap
+
 " Keybindings
 nnoremap <C-n> :NvimTreeToggle<CR>
 nnoremap <leader>r :NvimTreeRefresh<CR>
 nnoremap <leader>n :NvimTreeFindFile<CR>
-" nnoremap <leader>mt :MinimapToggle<CR>
-nmap <Leader>ss :<C-u>SessionSave<CR>
-nmap <Leader>sl :<C-u>SessionLoad<CR>
+nmap <Leader>s :ToggleWorkspace<CR>
 nnoremap <silent> <Leader>fh :DashboardFindHistory<CR>
 nnoremap <silent> <Leader>ff :DashboardFindFile<CR>
-nnoremap <silent> <Leader>tc :DashboardChangeColorscheme<CR>
+nnoremap <silent> <Leader>vc :DashboardChangeColorscheme<CR>
 nnoremap <silent> <Leader>fa :DashboardFindWord<CR>
 nnoremap <silent> <Leader>fb :DashboardJumpMark<CR>
-nnoremap <silent> <Leader>cn :DashboardNewFile<CR>
+nnoremap <silent> <Leader>fn :DashboardNewFile<CR>
+nnoremap <silent> <Leader>h :Dashboard<CR>
 nnoremap <Leader>ld :Telescope lsp_definitions<CR>
 nnoremap <leader>lr :Telescope lsp_references<CR>
 nnoremap <leader>gs :Telescope git_status<CR>
 nnoremap <leader>gb :Telescope git_branches<CR>
 nnoremap <leader>gc :Telescope git_bcommits<CR>
 nnoremap <leader>ls :Telescope lsp_document_symbols<CR>
-nnoremap <leader>r :Telescope reloader<CR>
+nnoremap <leader>rr :Telescope reloader<CR>
 nnoremap <Leader>m :Telescope man_pages<CR>
 inoremap <silent> <F2> <cmd>lua require('renamer').rename()<cr>
 nnoremap <silent> <leader>rn <cmd>lua require('renamer').rename()<cr>
 vnoremap <silent> <leader>rn <cmd>lua require('renamer').rename()<cr>
 nnoremap <Leader>nt :tabedit ./<CR>
+nnoremap <Leader>ch :Telescope neoclip<CR>
+nnoremap <leader>pi :PlugInstall<CR>
+nnoremap <leader>pu :PlugUpdate<CR>
+
 " cool Dashboard-nvim logo B)
 let g:dashboard_custom_header =<< trim END
+
    ▐ ▄  ▌ ▐·▪  • ▌ ▄ ·. ▄▄▄ .▐▄• ▄ 
   •█▌▐█▪█·█▌██ ·██ ▐███▪▀▄.▀· █▌█▌▪
   ▐█▐▐▌▐█▐█•▐█·▐█ ▌▐▌▐█·▐▀▀▪▄ ·██· 
   ██▐█▌ ███ ▐█▌██ ██▌▐█▌▐█▄▄▌▪▐█·█▌
-  ▀▀ █▪. ▀  ▀▀▀▀▀  █▪▀▀▀ ▀▀▀ •▀▀ ▀▀
-        By: StationaryStation
+  ▀▀ █▪. ▀  ▀▀▀▀▀  █▪▀▀▀ ▀▀▀ •▀▀   
+
 END
+
+" vim-workspace configuration 
+let g:workspace_autocreate = 1 
+let g:workspace_autosave_ignore = ['gitcommit', 'dashboard']
+let g:workspace_session_directory = $HOME . '/.vim/sessions/'
+let g:workspace_session_name = 'session.vim'
+let g:workspace_create_new_tabs = 1
+
 " Disable tabline in the dashboard buffer
 autocmd FileType dashboard set showtabline=0 | autocmd WinLeave <buffer> set showtabline=2
 
@@ -172,19 +204,20 @@ lua <<EOF
 	-- Configure Staline 
 	require('staline').setup {
 	defaults = {
-		left_separator  = "",
-		right_separator = "",
+		left_separator  = "",
+		right_separator = "",
 		line_column     = "[%l/%L] :%c 並%p%% ", -- `:h stl` to see all flags.
-		fg              = "#1a1b26",  -- Foreground text color.
-		bg              = "none",     -- Default background is transparent.
-		cool_symbol     = " ",
+		fg              = "#1a1b26",
+		bg              = "none",
+		cool_symbol     = " NvimEX 1.0.3",
 		branch_symbol = " ", 
 	},
+	-- TODO Make these colors change according to the colorscheme 
 	mode_colors = {
 		n = "#2ac3de",
 		i = "#9ece6a",
 		c = "#f7768e",
-		v = "#bb9af7",   -- etc..
+		v = "#bb9af7",
 	},
 	mode_icons = {
 		n = " ",
@@ -194,7 +227,7 @@ lua <<EOF
 	},
 	sections = {
 		left = { '- ', '-mode', '-file_name', 'left_sep_double', 'branch' },
-		mid = { '  ', 'lsp_name' },
+		mid = { 'right_sep_double', '- ', '-lsp', '- ', 'left_sep_double' },
 		right = { 'cool_symbol','right_sep_double', '-line_column' }
 	}
 }
@@ -317,11 +350,11 @@ lua <<EOF
   		hijack_cursor       = false,
   		update_cwd          = false,
   		update_to_buf_dir   = {
-    		enable = true,
-    		auto_open = true,
+    			enable = true,
+    			auto_open = true,
   		},
   		diagnostics = {
-    			enable = false,
+    			enable = true,
     			icons = {
       				hint = "",
       				info = "",
@@ -330,7 +363,7 @@ lua <<EOF
     			}
   		},
   		update_focused_file = {
-   			enable      = false,
+   			enable      = true,
     			update_cwd  = false,
     			ignore_list = {}
   		},
@@ -347,7 +380,7 @@ lua <<EOF
     			height = 30,
     			hide_root_folder = false,
     			side = 'left',
-    			auto_resize = false,
+    			auto_resize = true,
    			mappings = {
       				custom_only = false,
       				list = {}
@@ -471,7 +504,55 @@ lua <<EOF
         		['<c-r>'] = mappings_utils.redo,
     		},
 	}
-	
+	require("presence"):setup({
+  	  	-- General options
+    		auto_update         = true,                       -- Update activity based on autocmd events (if `false`, map or manually execute `:lua package.loaded.presence:update()`)
+    		neovim_image_text   = "NeoVim Extended 1.0.3", -- Text displayed when hovered over the Neovim image
+    		main_image          = "file",                   -- Main image display (either "neovim" or "file")
+    		client_id           = "793271441293967371",       -- Use your own Discord application client id (not recommended)
+    		log_level           = nil,                        -- Log messages at or above this level (one of the following: "debug", "info", "warn", "error")
+    		debounce_timeout    = 10,                         -- Number of seconds to debounce events (or calls to `:lua package.loaded.presence:update(<filename>, true)`)
+    		enable_line_number  = false,                      -- Displays the current line number instead of the current project
+    		blacklist           = {"dashboard", "vim-plug"},                         -- A list of strings or Lua patterns that disable Rich Presence if the current file name, path, or workspace matches
+    		buttons             = true,                       -- Configure Rich Presence button(s), either a boolean to enable/disable, a static table (`{{ label = "<label>", url = "<url>" }, ...}`, or a function(buffer: string, repo_url: string|nil): table)
+
+    		-- Rich Presence text options
+    		editing_text        = "Editing %s",               -- Format string rendered when an editable file is loaded in the buffer (either string or function(filename: string): string)
+    		file_explorer_text  = "Browsing %s",              -- Format string rendered when browsing a file explorer (either string or function(file_explorer_name: string): string)
+    		git_commit_text     = "Committing changes",       -- Format string rendered when committing changes in git (either string or function(filename: string): string)
+    		plugin_manager_text = "Managing plugins",         -- Format string rendered when managing plugins (either string or function(plugin_manager_name: string): string)
+    		reading_text        = "Reading %s",               -- Format string rendered when a read-only or unmodifiable file is loaded in the buffer (either string or function(filename: string): string)
+    		workspace_text      = "Working on %s",            -- Format string rendered when in a git repository (either string or function(project_name: string|nil, filename: string): string)
+    		line_number_text    = "Line %s out of %s",        -- Format string rendered when `enable_line_number` is set to true (either string or function(line_number: number, line_count: number): string)
+	})
+	-- Setup nvim-neoclip 
+	require('telescope').load_extension('neoclip')
+	require('neoclip').setup({
+      		history = 1000,
+     		enable_persistant_history = false,
+      		db_path = vim.fn.stdpath("data") .. "/databases/neoclip.sqlite3",
+      		filter = nil,
+      		preview = true,
+      		default_register = '"',
+      		content_spec_column = false,
+      		on_paste = {
+        		set_reg = false,
+      		},
+      		keys = {
+        		i = {
+          			select = '<cr>',
+          			paste = '<c-p>',
+          			paste_behind = '<c-k>',
+          			custom = {},
+        		},
+        		n = {
+          			select = '<cr>',
+          			paste = '<leader>cp',
+          			paste_behind = '<leader>cP',
+          			custom = {},
+        		},
+      		},
+    	})
 	-- Display Notification
 	vim.notify("Welcome back, StationaryStation!")
 EOF
