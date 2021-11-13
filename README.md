@@ -56,3 +56,6 @@ A terminal (I recomend [Kitty](https://github.com/kovidgoyal/kitty) and [Alacrit
 ![NvimTree in action](https://github.com/stationaryStation/nvimex/blob/nvimex-screenshots/Screenshot_2021-11-12-07-42-54_1920x1080.png?raw=true)
 
 ![Which-key with leader key](https://github.com/stationaryStation/nvimex/blob/nvimex-screenshots/Screenshot_2021-11-12-07-43-13_1920x1080.png?raw=true)
+
+## What NvimEX stands for?
+It stands for Neovim Extended. (Very original, I know)
