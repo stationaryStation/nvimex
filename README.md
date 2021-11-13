@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="https://github.com/stationaryStation/nvimex/blob/nvimex-screenshots/NvimEX.png" />
+</p>
+
 <h1 align="center">NvimEX</h1>
 <p align="center">Another neovim config.</p>
 
@@ -44,7 +48,7 @@ grep
 cat
 A terminal (I recomend [Kitty](https://github.com/kovidgoyal/kitty) and [Alacritty](https://github.com/alacritty/alacritty))
 
-## Showcase (not ready **yet**)
+## Showcase
 ![Dashboard](https://github.com/stationaryStation/nvimex/blob/nvimex-screenshots/Screenshot_2021-11-12-07-41-26_1920x1080.png?raw=true)
 
 ![Inside the editor](https://github.com/stationaryStation/nvimex/blob/nvimex-screenshots/Screenshot_2021-11-12-07-41-54_1920x1080.png?raw=true)
