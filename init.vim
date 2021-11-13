@@ -7,7 +7,7 @@
 "  A neovim configuration file for Neovim.
 "
 "  Author: StationaryStation 
-"  Version: 1.0.1
+"  Version: 1.0.2
 "
 call plug#begin()
 
@@ -134,7 +134,14 @@ nnoremap <silent> <Leader>tc :DashboardChangeColorscheme<CR>
 nnoremap <silent> <Leader>fa :DashboardFindWord<CR>
 nnoremap <silent> <Leader>fb :DashboardJumpMark<CR>
 nnoremap <silent> <Leader>cn :DashboardNewFile<CR>
-nnoremap <Leader>pp lua require'telescope.builtin.lsp_definitions'.planets{}<CR>
+nnoremap <Leader>ld :Telescope lsp_definitions<CR>
+nnoremap <leader>lr :Telescope lsp_references<CR>
+nnoremap <leader>gs :Telescope git_status<CR>
+nnoremap <leader>gb :Telescope git_branches<CR>
+nnoremap <leader>gc :Telescope git_bcommits<CR>
+nnoremap <leader>ls :Telescope lsp_document_symbols<CR>
+nnoremap <leader>r :Telescope reloader<CR>
+nnoremap <Leader>m :Telescope man_pages<CR>
 inoremap <silent> <F2> <cmd>lua require('renamer').rename()<cr>
 nnoremap <silent> <leader>rn <cmd>lua require('renamer').rename()<cr>
 vnoremap <silent> <leader>rn <cmd>lua require('renamer').rename()<cr>
