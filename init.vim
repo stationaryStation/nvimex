@@ -1,4 +1,4 @@
-"  _   _       _                     
+"  _   _       _
 " | \ | |_   _(_)_ __ ___   _____  __
 " |  \| \ \ / / | '_ ` _ \ / _ \ \/ /
 " | |\  |\ V /| | | | | | |  __/>  < 
@@ -10,7 +10,8 @@
 "  Version: 1.0.3
 "
 
-" Install vim-plug automatically for managing and updating plugins 
+" Install vim-plug automatically for managing and updating plugins
+" Only works on linux
 if empty(glob('~/.vim/autoload/plug.vim'))
   silent execute "!curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim"
   autocmd VimEnter * PlugInstall | source $MYVIMRC
@@ -82,6 +83,11 @@ Plug 'AckslD/nvim-neoclip.lua'
 Plug 'tami5/sqlite.lua'
 " Session autosave plugin 
 Plug 'thaerkh/vim-workspace'
+" Floating Terminal 
+Plug 'numToStr/FTerm.nvim'
+" Lightspeed (haha neovim go woosh!)
+Plug 'ggandor/lightspeed.nvim'
+Plug 'tpope/vim-repeat'
 
 call plug#end()
 
@@ -119,8 +125,7 @@ set termguicolors
 " Show line numbers 
 set number
 
-" Set leader key from / to ;
-let mapleader = ";"
+
 " Change colorscheme to tokyonight
 colorscheme tokyonight
 
@@ -142,6 +147,9 @@ set mouse=a
 set nowrap
 
 " Keybindings
+" By default the leader key is set to ';'
+" Change mapleader's string to the key you want (Example: let mapleader = '<Space>')
+let mapleader = ';'
 nnoremap <C-n> :NvimTreeToggle<CR>
 nnoremap <leader>r :NvimTreeRefresh<CR>
 nnoremap <leader>n :NvimTreeFindFile<CR>
@@ -159,16 +167,19 @@ nnoremap <leader>gs :Telescope git_status<CR>
 nnoremap <leader>gb :Telescope git_branches<CR>
 nnoremap <leader>gc :Telescope git_bcommits<CR>
 nnoremap <leader>ls :Telescope lsp_document_symbols<CR>
-nnoremap <leader>rr :Telescope reloader<CR>
+nnoremap <leader>cr :Telescope reloader<CR>
 nnoremap <Leader>m :Telescope man_pages<CR>
 inoremap <silent> <F2> <cmd>lua require('renamer').rename()<cr>
 nnoremap <silent> <leader>rn <cmd>lua require('renamer').rename()<cr>
-vnoremap <silent> <leader>rn <cmd>lua require('renamer').rename()<cr>
 nnoremap <Leader>nt :tabedit ./<CR>
 nnoremap <Leader>ch :Telescope neoclip<CR>
 nnoremap <leader>pi :PlugInstall<CR>
 nnoremap <leader>pu :PlugUpdate<CR>
-
+nnoremap <leader>tt :FTerm<CR>
+nnoremap <leader>tx :FTermClose<CR>
+nnoremap <leader>to :FTermOpen<CR>
+nnoremap <leader>gp :gitpush<CR>
+nnoremap <leader>ce :edit ~/.config/nvim/init.vim<cr>
 " cool Dashboard-nvim logo B)
 let g:dashboard_custom_header =<< trim END
 
@@ -196,7 +207,8 @@ hi default link RenamerBorder RenamerNormal
 hi default link RenamerTitle Identifier
 
 lua <<EOF
-
+	-- Make local variable for FTerm 
+	local fterm = require('FTerm')
 	-- Set nvim-notify as the default notification service
 	vim.notify = require 'notify'
 	-- Cokeline.nvim stuff
@@ -318,12 +330,14 @@ lua <<EOF
   	capabilities.textDocument.completion.completionItem.snippetSupport = true
   	require'lspconfig'.eslint.setup {}
 	require'lspconfig'.svelte.setup{}
+	-- Disable lspconfig for cmake if you are having trobules on windows.
 	require'lspconfig'.cmake.setup{}
 	require'lspconfig'.cssls.setup{
 		capabilities = capabilities,
 	}
+	-- You need to install the emmet language server from npm (npm install -g emmet-ls)
 	require'lspconfig'.emmet_ls.setup{}
-	-- for tsserver to work you need the npm package for typescript and typescript-language-server to be installed plus a optional tsconfig.json
+	-- for tsserver to work you need the npm package for typescript and typescript-language-server to be installed (npm install -g typescript-language-server typescript) plus a optional tsconfig.json
 	require'lspconfig'.tsserver.setup{}
 
 	-- Setup cmp_tabnine
@@ -553,6 +567,19 @@ lua <<EOF
         		},
       		},
     	})
+	fterm.setup({
+    		border = 'double',
+    		dimensions  = {
+        		height = 0.9,
+        		width = 0.9,
+    		},
+	})
+	-- Create FTerm Commands for vim 
+	vim.cmd('command! FTermOpen lua require("FTerm").open()')
+	vim.cmd('command! FTermClose lua require("FTerm").close()')
+	vim.cmd('command! FTermExit lua require("FTerm").exit()')
+	vim.cmd('command! FTermClose lua require("FTerm").toggle()')
+	vim.cmd('command! GitPush lua require("FTerm").scratch({ cmd = "git push"})')
 	-- Display Notification
 	vim.notify("Welcome back, StationaryStation!")
 EOF
