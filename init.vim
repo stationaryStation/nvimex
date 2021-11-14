@@ -7,7 +7,7 @@
 "  A neovim configuration file for Neovim.
 "
 "  Author: StationaryStation 
-"  Version: 1.0.3
+"  Version: 1.0.4
 "
 
 " Install vim-plug automatically for managing and updating plugins
@@ -25,8 +25,16 @@ call plug#begin()
 Plug 'tamton-aquib/staline.nvim'
 " Signify 
 Plug 'mhinz/vim-signify'
-" Colorscheme 
+" Colorschemes
 Plug 'folke/tokyonight.nvim', { 'branch': 'main' }
+Plug 'morhetz/gruvbox'
+Plug 'sainnhe/everforest'
+Plug 'joshdick/onedark.vim'
+Plug 'ray-x/aurora'
+Plug 'mcchrish/zenbones.nvim'
+Plug 'arcticicestudio/nord-vim'
+Plug 'tomasr/molokai'
+Plug 'sainnhe/edge'
 " Which Key (no really, which key is for exiting out of insert mode)
 Plug 'folke/which-key.nvim'
 " Nvim-cmp
@@ -44,9 +52,7 @@ Plug 'onsails/lspkind-nvim'
 " Tabnine
 Plug 'tzachar/cmp-tabnine', { 'do': './install.sh' }
 " Tabline (not to be confused with tabline)
-Plug 'noib3/cokeline.nvim'
-" Minimap
-" Plug 'wfxr/minimap.vim'
+Plug 'akinsho/bufferline.nvim'
 " Nvim-web-devicons
 Plug 'kyazdani42/nvim-web-devicons'
 " Notification service
@@ -88,6 +94,8 @@ Plug 'numToStr/FTerm.nvim'
 " Lightspeed (haha neovim go woosh!)
 Plug 'ggandor/lightspeed.nvim'
 Plug 'tpope/vim-repeat'
+" IndentLines 
+Plug 'Yggdroot/indentLine'
 
 call plug#end()
 
@@ -126,7 +134,15 @@ set termguicolors
 set number
 
 
-" Change colorscheme to tokyonight
+" Change colorscheme here 
+" Available options:
+" tokyonight
+" edge 
+" nord 
+" gruvbox
+" zenbones
+" aurora 
+" molokai
 colorscheme tokyonight
 
 " Configure scrollbar.nvim 
@@ -146,6 +162,12 @@ set mouse=a
 " Disable word wrapping
 set nowrap
 
+" Add custom IndentLines
+let g:indentLine_char_list = ['|', '¦', '┆', '┊']
+
+" Disable indentLines on dashboard
+let g:indentLine_fileTypeExclude = ['dashboard']
+
 " Keybindings
 " By default the leader key is set to ';'
 " Change mapleader's string to the key you want (Example: let mapleader = '<Space>')
@@ -156,7 +178,7 @@ nnoremap <leader>n :NvimTreeFindFile<CR>
 nmap <Leader>s :ToggleWorkspace<CR>
 nnoremap <silent> <Leader>fh :DashboardFindHistory<CR>
 nnoremap <silent> <Leader>ff :DashboardFindFile<CR>
-nnoremap <silent> <Leader>vc :DashboardChangeColorscheme<CR>
+nnoremap <silent> <Leader>cs :DashboardChangeColorscheme<CR>
 nnoremap <silent> <Leader>fa :DashboardFindWord<CR>
 nnoremap <silent> <Leader>fb :DashboardJumpMark<CR>
 nnoremap <silent> <Leader>fn :DashboardNewFile<CR>
@@ -180,6 +202,12 @@ nnoremap <leader>tx :FTermClose<CR>
 nnoremap <leader>to :FTermOpen<CR>
 nnoremap <leader>gp :gitpush<CR>
 nnoremap <leader>ce :edit ~/.config/nvim/init.vim<cr>
+nnoremap <leader>cv :Telescope vim_options<CR>
+nnoremap <silent>b[ :BufferLineCycleNext<CR>
+nnoremap <silent>b] :BufferLineCyclePrev<CR>
+nnoremap <silent> <leader>be :BufferLineSortByExtension<CR>
+nnoremap <silent> <leader>bd :BufferLineSortByDirectory<CR>
+nnoremap <silent> <leader>cg :BufferLineGroupClose<CR>
 " cool Dashboard-nvim logo B)
 let g:dashboard_custom_header =<< trim END
 
@@ -190,7 +218,16 @@ let g:dashboard_custom_header =<< trim END
   ▀▀ █▪. ▀  ▀▀▀▀▀  █▪▀▀▀ ▀▀▀ •▀▀   
 
 END
-
+" Dashboard-nvim stuff 
+let g:dashboard_custom_shortcut={
+\ 'last_session'       : ';sl',
+\ 'find_history'       : ';fh',
+\ 'find_file'          : ';ff',
+\ 'new_file'           : ';cn',
+\ 'change_colorscheme' : ';vc',
+\ 'find_word'          : ';fa',
+\ 'book_marks'         : ';fb',
+\ }
 " vim-workspace configuration 
 let g:workspace_autocreate = 1 
 let g:workspace_autosave_ignore = ['gitcommit', 'dashboard']
@@ -211,8 +248,58 @@ lua <<EOF
 	local fterm = require('FTerm')
 	-- Set nvim-notify as the default notification service
 	vim.notify = require 'notify'
-	-- Cokeline.nvim stuff
-	require('cokeline').setup({})
+	-- BufferLine setup
+	require("bufferline").setup{
+		options = {
+				diagnostics = "nvim-lsp",
+				diagnostics_indicator = function(count, level, diagnostics_dict, context)
+  								if context.buffer:current() then
+    									return ''
+  								end
+
+  								return ''
+							end,
+				separator_style = { '', '' },
+				sort_by = 'extension',
+				indicator_icon = '▎',
+				modified_icon = ' ',
+				}
+	}
+	-- Bufferline groups
+	local groups = require ('bufferline.groups')
+	groups = {
+			items = {
+					{
+						name = 'Docs',
+						icon = ' ',
+						priority = 3,
+						auto_close = true,
+						highlight = {gui = "undercurl", guisp = "blue"},
+						matcher = function(buf)
+        							return buf.filename:match('%.md') or buf.filename:match('%.txt')
+							end,
+					},
+					{
+						name = "JavaScript",
+						icon = ' ',
+						auto_close = true,
+						highlight = {gui = "undercurl", guisp = "yellow"},
+						matcher = function(buf)
+								return buf.filename:match('%.js')
+							end,
+					},
+					{
+						name = "Neovim",
+						icon = ' ',
+						priority = 2,
+						auto_close = true,
+						hightlight = {gui = "undercurl", guisp = "green"},
+						matcher = function(buf)
+								return buf.filename:match('%.vim')
+							end,
+					}
+				}
+		}
 	-- Configure Staline 
 	require('staline').setup {
 	defaults = {
@@ -221,7 +308,7 @@ lua <<EOF
 		line_column     = "[%l/%L] :%c 並%p%% ", -- `:h stl` to see all flags.
 		fg              = "#1a1b26",
 		bg              = "none",
-		cool_symbol     = " NvimEX 1.0.3",
+		cool_symbol     = " NvimEX 1.0.4",
 		branch_symbol = " ", 
 	},
 	-- TODO Make these colors change according to the colorscheme 
