@@ -239,7 +239,7 @@ lua <<EOF
 	},
 	sections = {
 		left = { '- ', '-mode', '-file_name', 'left_sep_double', 'branch' },
-		mid = { 'right_sep_double', '- ', '-lsp', '- ', 'left_sep_double' },
+		mid = {'lsp'},
 		right = { 'cool_symbol','right_sep_double', '-line_column' }
 	}
 }
