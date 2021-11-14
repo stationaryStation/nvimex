@@ -7,7 +7,7 @@
 
 
 ---
-<p align="center"> [Instalation](#Instalation) - [Plugins](#Plugins) - [Screenshots](#Screenshots) </p>
+<p align="center"> [Instalation](https://github.com/stationaryStation/nvimex/#Instalation) - [Plugins](https://github.com/stationaryStation/nvimex/#Plugins) - [Screenshots](https://github.com/stationaryStation/nvimex/#Screenshots) </p>
 # What is the purpose of this?
 
 To make neovim more like a full-on IDE for general purpose by adding a N00B friendly interface, more keybinds, a cheatsheet and other useful features.
@@ -79,9 +79,14 @@ and more! (i am too lazy to type all of the plugins ;p )
 # Requirements 
 
 Linux (I haven't tested windows nor macOS since i don't have a mac and i don't want to use a vm)
+
 grep
+
 cat
+
 A terminal (I recomend [Kitty](https://github.com/kovidgoyal/kitty) and [Alacritty](https://github.com/alacritty/alacritty))
+
+A patched Nerd Font (Any patched font from nerdfonts.com should work) 
 
 # Screenshots
 ![Dashboard](https://github.com/stationaryStation/nvimex/blob/nvimex-screenshots/Screenshot_2021-11-12-07-41-26_1920x1080.png?raw=true)
