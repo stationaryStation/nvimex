@@ -33,7 +33,7 @@ Plug 'joshdick/onedark.vim'
 Plug 'ray-x/aurora'
 Plug 'mcchrish/zenbones.nvim'
 Plug 'arcticicestudio/nord-vim'
-Plug 'tomasr/molokai'
+Plug 'tamelion/neovim-molokai'
 Plug 'sainnhe/edge'
 " Which Key (no really, which key is for exiting out of insert mode)
 Plug 'folke/which-key.nvim'
@@ -145,6 +145,11 @@ set number
 " molokai
 colorscheme tokyonight
 
+" Sync colorscheme with alacritty using alacritty-colorscheme
+if filereadable(expand("~/.vimrc_background"))
+  let base16colorspace=256
+  source ~/.vimrc_background
+endif
 " Configure scrollbar.nvim 
 augroup ScrollbarInit
   autocmd!
@@ -521,10 +526,10 @@ lua <<EOF
 
   		-- Icons for the different levels
   			icons = {
-    				ERROR = "",
-    				WARN = "",
-    				INFO = "",
-    				DEBUG = "",
+    				ERROR = " ",
+    				WARN = " ",
+    				INFO = " ",
+    				DEBUG = " ",
    				TRACE = "✎",
   			},
 	})
