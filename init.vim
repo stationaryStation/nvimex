@@ -12,11 +12,11 @@
 
 " Install vim-plug automatically for managing and updating plugins
 " Only works on linux
-if empty(glob('~/.vim/autoload/plug.vim'))
-  silent execute "!curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim"
-  autocmd VimEnter * PlugInstall | source $MYVIMRC
-endif 
-
+let data_dir = has('nvim') ? stdpath('data') . '/site' : '~/.vim'
+if empty(glob(data_dir . '/autoload/plug.vim'))
+  silent execute '!curl -fLo '.data_dir.'/autoload/plug.vim --create-dirs  https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+endif
 
 "Install plugins
 call plug#begin()
@@ -213,6 +213,9 @@ nnoremap <silent>b] :BufferLineCyclePrev<CR>
 nnoremap <silent> <leader>be :BufferLineSortByExtension<CR>
 nnoremap <silent> <leader>bd :BufferLineSortByDirectory<CR>
 nnoremap <silent> <leader>cg :BufferLineGroupClose<CR>
+nnoremap <silent> <leader>hl :WhichKey <leader><CR>
+nnoremap <silent> <leader>hw :WhichKey <CR>
+nnoremap <silent> <leader>ht :WhichKey <C-w><CR>
 " cool Dashboard-nvim logo B)
 let g:dashboard_custom_header =<< trim END
 
@@ -248,6 +251,8 @@ hi default link RenamerNormal Normal
 hi default link RenamerBorder RenamerNormal
 hi default link RenamerTitle Identifier
 
+" Lua stuff starts here 
+" Please use the lua syntax instead of the vimscript syntax.
 lua <<EOF
 	-- Make local variable for FTerm 
 	local fterm = require('FTerm')
@@ -383,7 +388,7 @@ lua <<EOF
 					if entry.completion_item.data ~= nil and entry.completion_item.data.detail ~= nil then
 						menu = entry.completion_item.data.detail .. ' ' .. menu
 					end
-					vim_item.kind = ''
+					vim_item.kind = ''
 				end
 				vim_item.menu = menu
 				return vim_item
